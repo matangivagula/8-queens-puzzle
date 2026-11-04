@@ -22,7 +22,7 @@ We solve N-Queens (N = 8 to 256) with a genetic algorithm (GA), then combine man
 - **Results format:** CSV, one row per run: `n, method, crowd_size, seed, best_fitness, solved, generations, runtime_s`
 - **Seeds:** fixed and logged, so every result can be reproduced
 
-## Person 1: Genetic Algorithm Code
+## Audrey: Genetic Algorithm Code
 
 Owns `ga.py`: a GA that any N from 8 to 256 can call, returning the dict in the shared contract.
 
@@ -47,7 +47,7 @@ Owns `ga.py`: a GA that any N from 8 to 256 can call, returning the dict in the 
 - Representation and fitness function, with the formula
 - GA operators and the parameter values chosen, with reasons
 
-## Person 2: Wisdom of Crowds + Integration
+## Varshine: Wisdom of Crowds + Integration
 
 Owns `woc.py` and `main.py`: builds the crowd from GA runs, aggregates it into one solution, and wires GA → WoC → results → GUI.
 
@@ -70,7 +70,7 @@ Owns `woc.py` and `main.py`: builds the crowd from GA runs, aggregates it into o
 - Aggregation method with a small worked example (N = 8)
 - Comparison of GA-only vs. GA+WoC, using Person 3's results
 
-## Person 3: Test Data + Experiments + GUI
+## Matangi: Test Data + Experiments + GUI
 
 Owns `generate_data.py`, `experiments.py`, and `gui.py`: creates the datasets, runs every experiment, and shows the solutions visually.
 
