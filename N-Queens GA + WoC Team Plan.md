@@ -22,7 +22,7 @@ We solve N-Queens (N = 8 to 256) with a genetic algorithm (GA), then combine man
 - **Results format:** CSV, one row per run: `n, method, crowd_size, seed, best_fitness, solved, generations, runtime_s`
 - **Seeds:** fixed and logged, so every result can be reproduced
 
-## Person 1: Genetic Algorithm Code
+## Audrey: Genetic Algorithm Code
 
 Owns `ga.py`: a GA that any N from 8 to 256 can call, returning the dict in the shared contract.
 
@@ -47,7 +47,7 @@ Owns `ga.py`: a GA that any N from 8 to 256 can call, returning the dict in the 
 - Representation and fitness function, with the formula
 - GA operators and the parameter values chosen, with reasons
 
-## Person 2: Wisdom of Crowds + Integration
+## Varshine: Wisdom of Crowds + Integration
 
 Owns `woc.py` and `main.py`: builds the crowd from GA runs, aggregates it into one solution, and wires GA → WoC → results → GUI.
 
@@ -70,7 +70,7 @@ Owns `woc.py` and `main.py`: builds the crowd from GA runs, aggregates it into o
 - Aggregation method with a small worked example (N = 8)
 - Comparison of GA-only vs. GA+WoC, using Person 3's results
 
-## Person 3: Test Data + Experiments + GUI
+## Matangi: Test Data + Experiments + GUI
 
 Owns `generate_data.py`, `experiments.py`, and `gui.py`: creates the datasets, runs every experiment, and shows the solutions visually.
 
@@ -111,12 +111,12 @@ Owns `generate_data.py`, `experiments.py`, and `gui.py`: creates the datasets, r
 ## Timeline
 
 1. **Wed 11/4:** Agree on the shared contracts, set up the repo, brainstorm.
-2. **Thu–Fri 11/5–11/6:** P1 builds the GA, P2 builds WoC on dummy data, P3 builds the generator and GUI skeleton. GA hand-off Friday.
-3. **Sat 11/7:** Integrate GA → WoC → GUI; full pipeline runs.
-4. **Sun 11/8:** P3 runs the full experiment sweep; everyone fixes bugs and finishes comments.
+2. **Thu–Sat 11/5–11/7:** P1 builds the GA, P2 builds WoC on dummy data, P3 builds the generator and GUI skeleton. GA hand-off Friday.
+3. **Sun 11/8:** Integrate GA → WoC → GUI; full pipeline runs.
+4. **Sun 11/8:** P3 runs the full experiment sweep; everyone fixes bugs and finishes comments. Everyone writes the report.
 5. **Mon 11/9:** Submit code.
 6. **11/10–11/12:** Each person builds their slides; submit the presentation 11/12.
-7. **11/13–11/23:** Each person writes their report sections; merge, edit, and submit the paper 11/23.
+7. **11/13–11/23:** Each person writes their paper sections; merge, edit, and submit the paper 11/23.
 
 ## Report Outline (9–10 pages)
 
