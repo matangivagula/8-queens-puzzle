@@ -111,12 +111,12 @@ Owns `generate_data.py`, `experiments.py`, and `gui.py`: creates the datasets, r
 ## Timeline
 
 1. **Wed 11/4:** Agree on the shared contracts, set up the repo, brainstorm.
-2. **Thu–Fri 11/5–11/6:** P1 builds the GA, P2 builds WoC on dummy data, P3 builds the generator and GUI skeleton. GA hand-off Friday.
-3. **Sat 11/7:** Integrate GA → WoC → GUI; full pipeline runs.
-4. **Sun 11/8:** P3 runs the full experiment sweep; everyone fixes bugs and finishes comments.
+2. **Thu–Sat 11/5–11/7:** P1 builds the GA, P2 builds WoC on dummy data, P3 builds the generator and GUI skeleton. GA hand-off Friday.
+3. **Sun 11/8:** Integrate GA → WoC → GUI; full pipeline runs.
+4. **Sun 11/8:** P3 runs the full experiment sweep; everyone fixes bugs and finishes comments. Everyone writes the report.
 5. **Mon 11/9:** Submit code.
 6. **11/10–11/12:** Each person builds their slides; submit the presentation 11/12.
-7. **11/13–11/23:** Each person writes their report sections; merge, edit, and submit the paper 11/23.
+7. **11/13–11/23:** Each person writes their paper sections; merge, edit, and submit the paper 11/23.
 
 ## Report Outline (9–10 pages)
 
