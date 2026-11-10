@@ -210,15 +210,13 @@ if __name__ == "__main__":
     main()
 
 def run_ga(n, params=None, seed=None, fixed_queens=()):
-    """Top-level convenience function so gui.py and external modules can call GA directly."""
-    #Map common alias names to Audrey's GASettings dataclass field names
-    if params:
+    # another run_ga function so that gui.py and external modules can call GA directly
+    if params:  # Map common alias names to the GASettings dataclass field names above the file
         normalized_params = dict(params)
         if "pop_size" in normalized_params:
             normalized_params["population_size"] = normalized_params.pop("pop_size")
         if "max_gen" in normalized_params:
             normalized_params["max_generations"] = normalized_params.pop("max_gen")
         params = normalized_params
-
     solver = NQueensGA(n, fixed_queens)
     return solver.run_ga(params=params, seed=seed)

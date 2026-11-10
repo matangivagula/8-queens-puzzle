@@ -6,10 +6,9 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 
-# Connect real algorithm modules
+# Connect algorithm modules
 from ga import run_ga
 from woc import run_woc
-
 
 class ColorfulNQueensGUI:
     def __init__(self, root):
@@ -17,15 +16,14 @@ class ColorfulNQueensGUI:
         self.root.title("N-Queens: GA vs. Wisdom of Artificial Crowds")
         self.root.geometry("1180x760")
 
-        # Color Palette Definitions
-        self.BG_MAIN = "#1E1E2E"       # Deep Purple/Dark Background
-        self.BG_CARD = "#2B2B3D"       # Dark Slate Card Accent
-        self.TEXT_COLOR = "#F8F8F2"    # Bright Off-White
-        self.ACCENT_PURPLE = "#BD93F9"  # Neon Purple
-        self.ACCENT_PINK = "#FF79C6"    # Vibrant Pink
-        self.ACCENT_CYAN = "#8BE9FD"    # Electric Cyan
-        self.ACCENT_GREEN = "#50FA7B"   # Neon Mint Green
-        self.ACCENT_YELLOW = "#F1FA8C"  # Neon Yellow
+        self.BG_MAIN = "#1E1E2E"       # Background
+        self.BG_CARD = "#2B2B3D"       # Slate Card
+        self.TEXT_COLOR = "#F8F8F2"    # Text Color
+        self.ACCENT_PURPLE = "#BD93F9"
+        self.ACCENT_PINK = "#FF79C6"
+        self.ACCENT_CYAN = "#8BE9FD"
+        self.ACCENT_GREEN = "#50FA7B"
+        self.ACCENT_YELLOW = "#F1FA8C"
 
         self.root.configure(bg=self.BG_MAIN)
         self.setup_styles()
@@ -47,7 +45,7 @@ class ColorfulNQueensGUI:
         controls_box = tk.Frame(header_frame, bg=self.BG_CARD)
         controls_box.pack(side=tk.TOP, fill=tk.X, padx=15, pady=(0, 10))
 
-        # 1. Dataset File Dropdown (Scans data/ directory)
+        # File Dropdown
         tk.Label(controls_box, text="Test File:", fg=self.TEXT_COLOR, bg=self.BG_CARD,
                  font=("Arial", 10, "bold")).grid(row=0, column=0, padx=5)
         self.data_files = self.get_available_datasets()
@@ -59,21 +57,21 @@ class ColorfulNQueensGUI:
             self.combo_file.set("No data files found")
         self.combo_file.grid(row=0, column=1, padx=5)
 
-        # 2. Board Size (N) Dropdown
+        # Board Size Dropdown
         tk.Label(controls_box, text="Board Size (N):", fg=self.TEXT_COLOR, bg=self.BG_CARD,
                  font=("Arial", 10, "bold")).grid(row=0, column=2, padx=5)
         self.combo_n = ttk.Combobox(controls_box, values=[8, 16, 32, 64, 128, 256], width=6, state="readonly")
         self.combo_n.set(8)
         self.combo_n.grid(row=0, column=3, padx=5)
 
-        # 3. Crowd Size (k) Dropdown
-        tk.Label(controls_box, text="Crowd (k):", fg=self.TEXT_COLOR, bg=self.BG_CARD,
+        # Crowd Size Dropdown
+        tk.Label(controls_box, text="Crowd Size (k):", fg=self.TEXT_COLOR, bg=self.BG_CARD,
                  font=("Arial", 10, "bold")).grid(row=0, column=4, padx=5)
         self.combo_k = ttk.Combobox(controls_box, values=[5, 10, 20], width=5, state="readonly")
         self.combo_k.set(10)
         self.combo_k.grid(row=0, column=5, padx=5)
 
-        # 4. Seed Input
+        # Seed Input
         tk.Label(controls_box, text="Seed:", fg=self.TEXT_COLOR, bg=self.BG_CARD, font=("Arial", 10, "bold")).grid(
             row=0, column=6, padx=5)
         self.entry_seed = tk.Entry(controls_box, width=8, bg="#383A59", fg=self.TEXT_COLOR, insertbackground="white",
@@ -81,7 +79,7 @@ class ColorfulNQueensGUI:
         self.entry_seed.insert(0, "42")
         self.entry_seed.grid(row=0, column=7, padx=5)
 
-        # 5. Run Button
+        # Run Button
         self.btn_run = tk.Button(
             controls_box, text="RUN COMPARISON", font=("Arial", 10, "bold"),
             bg=self.ACCENT_PINK, fg="black", activebackground=self.ACCENT_PURPLE,
@@ -105,7 +103,7 @@ class ColorfulNQueensGUI:
         self.canvas_ga = tk.Canvas(ga_frame, width=320, height=320, bg="#191A21", highlightthickness=0)
         self.canvas_ga.pack(fill=tk.BOTH, expand=True, padx=8, pady=8)
 
-        # GA + WoC Board Box
+        # GA and WoC Board Box
         woc_frame = tk.LabelFrame(
             boards_container, text="GA + WoC Solution ",
             fg=self.ACCENT_GREEN, bg=self.BG_CARD, font=("Arial", 11, "bold"), bd=2
@@ -114,7 +112,7 @@ class ColorfulNQueensGUI:
         self.canvas_woc = tk.Canvas(woc_frame, width=320, height=320, bg="#191A21", highlightthickness=0)
         self.canvas_woc.pack(fill=tk.BOTH, expand=True, padx=8, pady=8)
 
-        # Right Panel: Graph & Status Bar
+        # Right Panel - Graph & Status Bar
         right_panel = tk.Frame(workspace_frame, bg=self.BG_MAIN)
         right_panel.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
@@ -131,7 +129,7 @@ class ColorfulNQueensGUI:
         self.plot_canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         self.status_lbl = tk.Label(
-            right_panel, text="Status: Ready for experiment run!",
+            right_panel, text="Status: Ready for experiment run.",
             font=("Arial", 11, "bold"), fg=self.ACCENT_GREEN, bg=self.BG_CARD,
             pady=8, bd=1, relief=tk.SOLID
         )
@@ -147,7 +145,7 @@ class ColorfulNQueensGUI:
         style.configure("TCombobox", fieldbackground="#E0E0E0", background=self.BG_CARD, foreground="black", selectbackground="#BD93F9", selectforeground="black")
         style.map("TCombobox",
                   fieldbackground=[("readonly", "#E0E0E0")],
-                  foreground=[("readonly", "black")]  # Ensure text remains black in readonly state
+                  foreground=[("readonly", "black")]
                   )
         self.root.option_add("*TCombobox*Listbox.background", "#E0E0E0")
         self.root.option_add("*TCombobox*Listbox.foreground", "black")
@@ -155,14 +153,14 @@ class ColorfulNQueensGUI:
         self.root.option_add("*TCombobox*Listbox.selectForeground", "black")
 
     def get_available_datasets(self, data_dir="data"):
-        """Scans data/ folder and returns a list of JSON files."""
+        # Scans data/ folder and returns a list of JSON files.
         if os.path.exists(data_dir):
             files = [f for f in os.listdir(data_dir) if f.endswith(".json")]
             return sorted(files)
         return []
 
     def on_file_selected(self, event=None):
-        """Auto-fills Board Size (N) and Seed when a dataset file is selected."""
+        # Auto-fills Board Size (N) and Seed when a dataset file is selected.
         selected_file = self.combo_file.get()
         file_path = os.path.join("data", selected_file)
         if os.path.exists(file_path):
@@ -181,14 +179,13 @@ class ColorfulNQueensGUI:
         size = min(w, h)
         if size <= 10:
             size = 320
-
         cell = size / n
 
-        # Render background grid squares
+        # background grid squares
         color_light = "#1E293B"
         color_dark = "#0F172A"
 
-        # Skip grid square outlines for very large N to maintain performance
+        # Skips grid square outlines for very large N to maintain performance
         if n < 128:
             for r in range(n):
                 for c in range(n):
@@ -254,7 +251,7 @@ class ColorfulNQueensGUI:
         self.ax.set_facecolor("#191A21")
         self.ax.plot(ga_res["history"], label=f"GA (Best: {ga_res['best_fitness']})", color=self.ACCENT_PINK,
                      linewidth=2, linestyle="--")
-        self.ax.plot(woc_res["history"], label=f"GA+WoC (Best: {woc_res['best_fitness']})", color=self.ACCENT_GREEN,
+        self.ax.plot(woc_res["history"], label=f"GA and WoC (Best: {woc_res['best_fitness']})", color=self.ACCENT_GREEN,
                      linewidth=2.5)
         self.ax.set_title(f"Fitness Convergence (N={n}, k={k})", color=self.TEXT_COLOR, fontsize=11, fontweight="bold")
         self.ax.set_xlabel("Generations", color=self.ACCENT_CYAN)
@@ -265,11 +262,10 @@ class ColorfulNQueensGUI:
         self.plot_canvas.draw()
 
         self.status_lbl.config(
-            text=f"Execution Done! | GA Time: {ga_res['runtime_s']:.3f}s | WoC Time: {woc_res['runtime_s']:.3f}s",
+            text=f"Execution Done! GA Time: {ga_res['runtime_s']:.3f}s WoC Time: {woc_res['runtime_s']:.3f}s",
             fg=self.ACCENT_GREEN
         )
-
-
+        
 if __name__ == "__main__":
     root = tk.Tk()
     app = ColorfulNQueensGUI(root)
