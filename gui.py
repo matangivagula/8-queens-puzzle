@@ -1,26 +1,14 @@
+import os
+import json
 import tkinter as tk
 from tkinter import ttk, messagebox
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
-import json
-import os
 
-# Imports from team modules (with mock fallback for standalone design testing)
-try:
-    from ga import run_ga
-    from woc import run_woc
-except ImportError:
-    def run_ga(n, params, seed):
-        history = [int(n * 1.5 * (0.85 ** i)) for i in range(25)] + [1, 0]
-        return {"best_board": [(i * 3) % n for i in range(n)], "best_fitness": 0, "history": history,
-                "runtime_s": 0.142}
-
-
-    def run_woc(n, crowd_size, expert_pct, seed):
-        history = [int(n * 1.2 * (0.70 ** i)) for i in range(15)] + [0]
-        return {"best_board": [(i * 5) % n for i in range(n)], "best_fitness": 0, "history": history,
-                "runtime_s": 0.048}
+# Connect real algorithm modules
+from ga import run_ga
+from woc import run_woc
 
 
 class ColorfulNQueensGUI:
@@ -30,13 +18,13 @@ class ColorfulNQueensGUI:
         self.root.geometry("1180x760")
 
         # Color Palette Definitions
-        self.BG_MAIN = "#1E1E2E"  # Deep Purple/Dark Background
-        self.BG_CARD = "#2B2B3D"  # Dark Slate Card Accent
-        self.TEXT_COLOR = "#F8F8F2"  # Bright Off-White
+        self.BG_MAIN = "#1E1E2E"       # Deep Purple/Dark Background
+        self.BG_CARD = "#2B2B3D"       # Dark Slate Card Accent
+        self.TEXT_COLOR = "#F8F8F2"    # Bright Off-White
         self.ACCENT_PURPLE = "#BD93F9"  # Neon Purple
-        self.ACCENT_PINK = "#FF79C6"  # Vibrant Pink
-        self.ACCENT_CYAN = "#8BE9FD"  # Electric Cyan
-        self.ACCENT_GREEN = "#50FA7B"  # Neon Mint Green
+        self.ACCENT_PINK = "#FF79C6"    # Vibrant Pink
+        self.ACCENT_CYAN = "#8BE9FD"    # Electric Cyan
+        self.ACCENT_GREEN = "#50FA7B"   # Neon Mint Green
         self.ACCENT_YELLOW = "#F1FA8C"  # Neon Yellow
 
         self.root.configure(bg=self.BG_MAIN)
@@ -59,40 +47,47 @@ class ColorfulNQueensGUI:
         controls_box = tk.Frame(header_frame, bg=self.BG_CARD)
         controls_box.pack(side=tk.TOP, fill=tk.X, padx=15, pady=(0, 10))
 
-        # Inputs
-        tk.Label(controls_box, text="Board Size (N):", fg=self.TEXT_COLOR, bg=self.BG_CARD,
+        # 1. Dataset File Dropdown (Scans data/ directory)
+        tk.Label(controls_box, text="Test File:", fg=self.TEXT_COLOR, bg=self.BG_CARD,
                  font=("Arial", 10, "bold")).grid(row=0, column=0, padx=5)
+        self.data_files = self.get_available_datasets()
+        self.combo_file = ttk.Combobox(controls_box, values=self.data_files, width=22, state="readonly")
+        if self.data_files:
+            self.combo_file.set(self.data_files[0])
+            self.combo_file.bind("<<ComboboxSelected>>", self.on_file_selected)
+        else:
+            self.combo_file.set("No data files found")
+        self.combo_file.grid(row=0, column=1, padx=5)
+
+        # 2. Board Size (N) Dropdown
+        tk.Label(controls_box, text="Board Size (N):", fg=self.TEXT_COLOR, bg=self.BG_CARD,
+                 font=("Arial", 10, "bold")).grid(row=0, column=2, padx=5)
         self.combo_n = ttk.Combobox(controls_box, values=[8, 16, 32, 64, 128, 256], width=6, state="readonly")
         self.combo_n.set(8)
-        self.combo_n.grid(row=0, column=1, padx=5)
+        self.combo_n.grid(row=0, column=3, padx=5)
 
-        tk.Label(controls_box, text="Crowd Size (k):", fg=self.TEXT_COLOR, bg=self.BG_CARD,
-                 font=("Arial", 10, "bold")).grid(row=0, column=2, padx=5)
+        # 3. Crowd Size (k) Dropdown
+        tk.Label(controls_box, text="Crowd (k):", fg=self.TEXT_COLOR, bg=self.BG_CARD,
+                 font=("Arial", 10, "bold")).grid(row=0, column=4, padx=5)
         self.combo_k = ttk.Combobox(controls_box, values=[5, 10, 20], width=5, state="readonly")
         self.combo_k.set(10)
-        self.combo_k.grid(row=0, column=3, padx=5)
+        self.combo_k.grid(row=0, column=5, padx=5)
 
+        # 4. Seed Input
         tk.Label(controls_box, text="Seed:", fg=self.TEXT_COLOR, bg=self.BG_CARD, font=("Arial", 10, "bold")).grid(
-            row=0, column=4, padx=5)
+            row=0, column=6, padx=5)
         self.entry_seed = tk.Entry(controls_box, width=8, bg="#383A59", fg=self.TEXT_COLOR, insertbackground="white",
-                                   font=("Arial", 10))
+                                   font=("Arial", 10, "bold"))
         self.entry_seed.insert(0, "42")
-        self.entry_seed.grid(row=0, column=5, padx=5)
+        self.entry_seed.grid(row=0, column=7, padx=5)
 
-        # Action Buttons
+        # 5. Run Button
         self.btn_run = tk.Button(
             controls_box, text="RUN COMPARISON", font=("Arial", 10, "bold"),
             bg=self.ACCENT_PINK, fg="black", activebackground=self.ACCENT_PURPLE,
             relief=tk.FLAT, padx=12, pady=3, command=self.on_run, cursor="hand2"
         )
-        self.btn_run.grid(row=0, column=6, padx=12)
-
-        self.btn_load = tk.Button(
-            controls_box, text="LOAD sampledata.json", font=("Arial", 10, "bold"),
-            bg=self.ACCENT_CYAN, fg="black", activebackground=self.ACCENT_GREEN,
-            relief=tk.FLAT, padx=10, pady=3, command=self.on_load_file, cursor="hand2"
-        )
-        self.btn_load.grid(row=0, column=7, padx=5)
+        self.btn_run.grid(row=0, column=8, padx=12)
 
         # Main Workspace
         workspace_frame = tk.Frame(root, bg=self.BG_MAIN)
@@ -142,10 +137,42 @@ class ColorfulNQueensGUI:
         )
         self.status_lbl.pack(fill=tk.X, side=tk.BOTTOM)
 
+        # If files were found initially, trigger auto-selection for the first file
+        if self.data_files:
+            self.on_file_selected()
+
     def setup_styles(self):
         style = ttk.Style()
         style.theme_use('clam')
-        style.configure("TCombobox", fieldbackground="#383A59", background=self.BG_CARD, foreground="white")
+        style.configure("TCombobox", fieldbackground="#E0E0E0", background=self.BG_CARD, foreground="black", selectbackground="#BD93F9", selectforeground="black")
+        style.map("TCombobox",
+                  fieldbackground=[("readonly", "#E0E0E0")],
+                  foreground=[("readonly", "black")]  # Ensure text remains black in readonly state
+                  )
+        self.root.option_add("*TCombobox*Listbox.background", "#E0E0E0")
+        self.root.option_add("*TCombobox*Listbox.foreground", "black")
+        self.root.option_add("*TCombobox*Listbox.selectBackground", "#BD93F9")
+        self.root.option_add("*TCombobox*Listbox.selectForeground", "black")
+
+    def get_available_datasets(self, data_dir="data"):
+        """Scans data/ folder and returns a list of JSON files."""
+        if os.path.exists(data_dir):
+            files = [f for f in os.listdir(data_dir) if f.endswith(".json")]
+            return sorted(files)
+        return []
+
+    def on_file_selected(self, event=None):
+        """Auto-fills Board Size (N) and Seed when a dataset file is selected."""
+        selected_file = self.combo_file.get()
+        file_path = os.path.join("data", selected_file)
+        if os.path.exists(file_path):
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if "n" in data:
+                self.combo_n.set(data["n"])
+            if "seed" in data:
+                self.entry_seed.delete(0, tk.END)
+                self.entry_seed.insert(0, str(data["seed"]))
 
     def draw_chessboard(self, canvas, board, n):
         canvas.delete("all")
@@ -157,29 +184,19 @@ class ColorfulNQueensGUI:
 
         cell = size / n
 
-        # Fallback Heatmap View for Large Instances N >= 128
-        if n >= 128:
-            canvas.create_rectangle(0, 0, size, size, fill="#191A21", outline="")
-            canvas.create_text(
-                size // 2, size // 2 - 15,
-                text=f"Conflict Heatmap Mode (N={n})",
-                fill=self.ACCENT_PINK, font=("Arial", 12, "bold")
-            )
-            canvas.create_text(
-                size // 2, size // 2 + 15,
-                text=f"Queens Placed: {n} | Grid density high",
-                fill=self.ACCENT_CYAN, font=("Arial", 10)
-            )
-            return
-
-        # Chessboard Palette
+        # Render background grid squares
         color_light = "#1E293B"
         color_dark = "#0F172A"
 
-        for r in range(n):
-            for c in range(n):
-                color = color_light if (r + c) % 2 == 0 else color_dark
-                canvas.create_rectangle(c * cell, r * cell, (c + 1) * cell, (r + 1) * cell, fill=color, outline="")
+        # Skip grid square outlines for very large N to maintain performance
+        if n < 128:
+            for r in range(n):
+                for c in range(n):
+                    color = color_light if (r + c) % 2 == 0 else color_dark
+                    canvas.create_rectangle(c * cell, r * cell, (c + 1) * cell, (r + 1) * cell, fill=color, outline="")
+        else:
+            # Solid background for dense grids
+            canvas.create_rectangle(0, 0, size, size, fill=color_dark, outline="")
 
         # Identify diagonal conflict positions
         conflicts = set()
@@ -189,21 +206,31 @@ class ColorfulNQueensGUI:
                     conflicts.add(i)
                     conflicts.add(j)
 
-        # Render Queen Symbols (♛)
+        # Render Queen markers (Dots for N >= 128, Queen symbols ♛ for N < 128)
         for col, row in enumerate(board):
             cx = col * cell + cell / 2
             cy = row * cell + cell / 2
-
             is_conflict = col in conflicts
-            q_color = "#FFD700" if is_conflict else self.ACCENT_YELLOW
-            font_size = max(10, int(cell * 0.65))
 
-            canvas.create_text(
-                cx, cy,
-                text="♛",
-                fill=q_color,
-                font=("Arial", font_size, "bold")
-            )
+            if n >= 128:
+                # Small dot rendering for high-density boards
+                dot_radius = max(1.0, cell / 2.5)
+                dot_color = "#FFD700" if is_conflict else self.ACCENT_YELLOW
+                canvas.create_oval(
+                    cx - dot_radius, cy - dot_radius,
+                    cx + dot_radius, cy + dot_radius,
+                    fill=dot_color, outline=""
+                )
+            else:
+                # Standard Unicode Queen Symbol rendering
+                q_color = "#FFD700" if is_conflict else self.ACCENT_YELLOW
+                font_size = max(10, int(cell * 0.65))
+                canvas.create_text(
+                    cx, cy,
+                    text="♛",
+                    fill=q_color,
+                    font=("Arial", font_size, "bold")
+                )
 
     def on_run(self):
         try:
@@ -214,7 +241,7 @@ class ColorfulNQueensGUI:
             messagebox.showerror("Error", "Invalid numeric seed or board selection.")
             return
 
-        self.status_lbl.config(text="⚡ Executing GA and Wisdom of Crowds algorithms...", fg=self.ACCENT_YELLOW)
+        self.status_lbl.config(text="Executing GA and Wisdom of Crowds algorithms...", fg=self.ACCENT_YELLOW)
         self.root.update()
 
         ga_res = run_ga(n=n, params={"pop_size": 100, "max_gen": 500}, seed=seed)
@@ -241,17 +268,6 @@ class ColorfulNQueensGUI:
             text=f"Execution Done! | GA Time: {ga_res['runtime_s']:.3f}s | WoC Time: {woc_res['runtime_s']:.3f}s",
             fg=self.ACCENT_GREEN
         )
-
-    def on_load_file(self):
-        if os.path.exists("sampledata.json"):
-            with open("sampledata.json", "r") as f:
-                data = json.load(f)
-            self.combo_n.set(data.get("n", 8))
-            self.entry_seed.delete(0, tk.END)
-            self.entry_seed.insert(0, str(data.get("seed", 42)))
-            self.on_run()
-        else:
-            messagebox.showwarning("Warning", "'sampledata.json' not found. Run generate_data.py first!")
 
 
 if __name__ == "__main__":

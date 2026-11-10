@@ -1,4 +1,5 @@
 import random
+from ga import NQueensGA
 
 CROWD_SIZE = 30
 CROWD_GENS = 30
@@ -94,3 +95,8 @@ def run_woc_ga(solver, expert_fraction, params=None, seed=0):
     result["total_evaluations"] = crowd_evals + result["fitness_evaluations"]
     result["start_fitness"] = result["history"][0]
     return result
+
+def run_woc(n, crowd_size=10, expert_pct=0.25, seed=0, params=None, fixed_queens=()):
+    """Top-level convenience function so gui.py and external modules can call WoC directly."""
+    solver = NQueensGA(n, fixed_queens)
+    return run_woc_ga(solver, expert_fraction=expert_pct, params=params, seed=seed)
