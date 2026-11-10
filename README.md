@@ -1,2 +1,4 @@
-# 8-queens-puzzle
+# N-queens-puzzle
 CSE 545 Final Project Work
+
+Inspired from the 8-queens problem but explores n = {8, 64, 128, 256}

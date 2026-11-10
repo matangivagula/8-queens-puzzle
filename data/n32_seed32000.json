@@ -1,0 +1,5 @@
+{
+    "n": 32,
+    "seed": 32000,
+    "description": "N-Queens test dataset for N=32, trial=1"
+}
