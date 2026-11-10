@@ -1,5 +1,22 @@
 {
-    "n": 8,
+    "n": 64,
     "seed": 42,
-    "description": "Default sample dataset for quick testing and GUI demonstration"
+    "fixed_queens": [
+        [
+            0,
+            0
+        ],
+        [
+            3,
+            5
+        ]
+    ],
+    "ga_params": {
+        "population_size": 200,
+        "max_generations": 2000,
+        "mutation_rate": 0.2,
+        "tournament_size": 5,
+        "elites": 3
+    },
+    "description": "8-queens completion puzzle with two fixed queens"
 }
