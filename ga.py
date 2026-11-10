@@ -177,7 +177,7 @@ class NQueensGA:
 
 
 def load_test_file(filename):
-    #Load a puzzle JSON object for the command line or the experiment runner."""
+    #Load a puzzle JSON object for the command line or the experiment runner.
     with open(filename, encoding="utf-8") as file:
         puzzle = json.load(file)
     if not isinstance(puzzle, dict) or not {"n", "fixed_queens"} <= puzzle.keys():
@@ -211,7 +211,7 @@ if __name__ == "__main__":
 
 def run_ga(n, params=None, seed=None, fixed_queens=()):
     """Top-level convenience function so gui.py and external modules can call GA directly."""
-    # Map common alias names to Audrey's GASettings dataclass field names
+    #Map common alias names to Audrey's GASettings dataclass field names
     if params:
         normalized_params = dict(params)
         if "pop_size" in normalized_params:
