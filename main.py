@@ -12,7 +12,7 @@ def main():
         from gui import NQueensGUI
 
         root = tk.Tk()
-        app = ColorfulNQueensGUI(root)
+        app = NQueensGUI(root)
         root.mainloop()
 
 if __name__ == "__main__":
