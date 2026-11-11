@@ -9,7 +9,7 @@ def main():
         # Launching GUI Visualizer
         print("Launching N-Queens GUI Visualizer.")
         import tkinter as tk
-        from gui import ColorfulNQueensGUI
+        from gui import NQueensGUI
 
         root = tk.Tk()
         app = ColorfulNQueensGUI(root)
