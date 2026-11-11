@@ -10,7 +10,7 @@ import numpy as np
 from ga import run_ga
 from woc import run_woc
 
-class ColorfulNQueensGUI:
+class NQueensGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("N-Queens: GA vs. Wisdom of Artificial Crowds")
@@ -247,15 +247,23 @@ class ColorfulNQueensGUI:
         self.draw_chessboard(self.canvas_ga, ga_res["best_board"], n)
         self.draw_chessboard(self.canvas_woc, woc_res["best_board"], n)
 
+        ga_hist = ga_res["history"] if len(ga_res["history"]) > 1 else ga_res["history"] * 2
+        woc_hist = woc_res["history"] if len(woc_res["history"]) > 1 else woc_res["history"] * 2
+
         self.ax.clear()
         self.ax.set_facecolor("#191A21")
         self.ax.plot(ga_res["history"], label=f"GA (Best: {ga_res['best_fitness']})", color=self.ACCENT_PINK,
                      linewidth=2, linestyle="--")
         self.ax.plot(woc_res["history"], label=f"GA and WoC (Best: {woc_res['best_fitness']})", color=self.ACCENT_GREEN,
                      linewidth=2.5)
+
         self.ax.set_title(f"Fitness Convergence (N={n}, k={k})", color=self.TEXT_COLOR, fontsize=11, fontweight="bold")
         self.ax.set_xlabel("Generations", color=self.ACCENT_CYAN)
         self.ax.set_ylabel("Diagonal Conflicts", color=self.ACCENT_CYAN)
+
+        self.ax.set_xlim(0, max(1, len(ga_hist) - 1))
+        max_y = max(max(ga_hist), max(woc_hist), 1)
+        self.ax.set_ylim(-0.5, max_y + 1)
         self.ax.axhline(0, color=self.ACCENT_YELLOW, linestyle=":", alpha=0.7)
         self.ax.tick_params(colors=self.TEXT_COLOR)
         self.ax.legend(facecolor=self.BG_CARD, edgecolor=self.ACCENT_PURPLE)
@@ -268,5 +276,5 @@ class ColorfulNQueensGUI:
         
 if __name__ == "__main__":
     root = tk.Tk()
-    app = ColorfulNQueensGUI(root)
+    app = NQueensGUI(root)
     root.mainloop()
